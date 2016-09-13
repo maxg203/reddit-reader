@@ -32,16 +32,16 @@
       <ion-content>
           <ion-refresher
             pulling-text="Pull to refresh..."
-            on-refresh="loadNewStories()">
+            on-refresh="loadNewerStories()">
           </ion-refresher>
           <div class="list">
-              <a href="{{story.url}}" class="item" target="_blank" ng-repeat="story in stories track by story.id">
+              <a href="{{story.url}}" class="item" target="_blank" ng-repeat="story in stories">
                   <h2 class="story-title">{{story.title}}</h2>
                   <p>{{story.domain}}</p>
                   <p><span am-time-ago="{{story.created_utc}}" am-preprocess="unix"></span></p>
               </a>
           </div>
-          <ion-infinite-scroll on-infinite="loadOldStories()" distance="1%">
+          <ion-infinite-scroll on-infinite="loadOlderStories()" distance="1%">
           </ion-infinite-scroll>
       </ion-content>
     </ion-pane>

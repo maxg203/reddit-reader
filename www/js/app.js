@@ -8,10 +8,10 @@
 var app = angular.module('redditReader', ['ionic', 'angularMoment'])
 
 app.controller('redditCtrl', function($scope, $http) {
-
+    console.log($scope);
     $scope.stories = [];
 
-    function loadStories(params) {
+    function loadStories(params, callback) {
         $http.get('https://www.reddit.com/new/.json', {params: params}).success(function(response) {
             var stories = [];
             angular.forEach(response.data.children, function(child) {
@@ -23,27 +23,24 @@ app.controller('redditCtrl', function($scope, $http) {
         })
     }
 
-    $scope.loadOldStories = function() {
+    $scope.loadOlderStories = function() {
         var params = {};
         if ($scope.stories.length > 0) {
             params['after'] = $scope.stories[$scope.stories.length - 1].name;
         }
-        
+
         loadStories(params, function(olderStories) {
             $scope.stories = $scope.stories.concat(olderStories);
             $scope.$broadcast('scroll.infiniteScrollComplete');
         })
-
-        $http.get('https://www.reddit.com/new/.json', {params: params}).success(function(response) {
-            angular.forEach(response.data.children, function(child) {
-                $scope.stories.push(child.data);
-                console.log(response);
-            })
-            $scope.$broadcast('scroll.infiniteScrollComplete');
-        })
     }
-    $scope.loadNewStories = function() {
+    $scope.loadNewerStories = function() {
+        var params = {'before': $scope.stories[0].name};
 
+        loadStories(params, function(newerStories) {
+            $scope.stories = newerStories.concat($scope.stories);
+            $scope.$broadcast('scroll.refreshComplete');
+        })
     }
 })
 
